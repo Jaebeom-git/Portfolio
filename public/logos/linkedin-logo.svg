@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 552 552" role="img" aria-labelledby="title">
+  <title id="title">LinkedIn logo</title>
+  <rect width="552" height="552" rx="36" fill="#2f6db5"/>
+  <circle cx="123" cy="124" r="47" fill="#fff"/>
+  <rect x="82" y="207" width="80" height="262" fill="#fff"/>
+  <path fill="#fff" d="M216 207h76v36c18-28 49-43 86-43 80 0 98 53 98 122v147h-80V339c0-31-1-71-43-71-44 0-50 34-50 69v132h-87V207z"/>
+  <text x="502" y="532" fill="#2f6db5" font-family="Arial, sans-serif" font-size="72">®</text>
+</svg>

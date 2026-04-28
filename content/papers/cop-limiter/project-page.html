@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MAISE: Joint Torque Estimation for Passive Sarcopenia Monitoring | Paper + Code</title>
+  <meta name="description" content="Project page for the paper ‘Joint torque estimation from daily living motion for passive sarcopenia monitoring in older adults,’ featuring MAISE and the CoP-constrained GRF-estimation code used for downstream torque analysis.">
+  <meta name="keywords" content="MAISE, sarcopenia, joint torque estimation, CoP-Limiter, ground reaction force estimation, biomechanics, older adults, motion analysis, cop-limiter">
+  <meta name="author" content="Jaebeom Jo, Kihyun Kim, Min-gu Kang, Kanghyun Ryu, Junhyoung Ha, Jiyeon Kang">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <meta name="google-site-verification" content="RbTN67xpVb8uU9nixGfDyQRr-rWaCJvQKh0GnuVEToI" />
+  <link rel="canonical" href="https://jaebeom-git.github.io/cop-limiter/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="MAISE: Joint Torque Estimation for Passive Sarcopenia Monitoring | Paper + Code">
+  <meta property="og:description" content="Project page for MAISE and the CoP-constrained GRF-estimation code used to support motion-based joint torque analysis.">
+  <meta property="og:url" content="https://jaebeom-git.github.io/cop-limiter/">
+  <meta property="og:image" content="https://jaebeom-git.github.io/cop-limiter/assets/figure-1-app.png">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="MAISE: Joint Torque Estimation for Passive Sarcopenia Monitoring | Paper + Code">
+  <meta name="twitter:description" content="Project page for MAISE and the CoP-constrained GRF-estimation code used to support motion-based joint torque analysis.">
+  <meta name="twitter:image" content="https://jaebeom-git.github.io/cop-limiter/assets/figure-1-app.png">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ResearchProject",
+    "name": "MAISE: Joint torque estimation from daily living motion for passive sarcopenia monitoring in older adults",
+    "url": "https://jaebeom-git.github.io/cop-limiter/",
+    "description": "This page connects the published MAISE paper with the official CoP-Limiter implementation for motion-based GRF estimation and joint torque analysis.",
+    "sameAs": [
+      "https://doi.org/10.1186/s12984-026-01962-3",
+      "https://github.com/Jaebeom-git/cop-limiter"
+    ],
+    "subjectOf": {
+      "@type": "ScholarlyArticle",
+      "headline": "Joint torque estimation from daily living motion for passive sarcopenia monitoring in older adults",
+      "datePublished": "2026-04-05",
+      "identifier": "https://doi.org/10.1186/s12984-026-01962-3",
+      "publisher": {
+        "@type": "Organization",
+        "name": "Journal of NeuroEngineering and Rehabilitation"
+      },
+      "author": [
+        {"@type": "Person", "name": "Jaebeom Jo"},
+        {"@type": "Person", "name": "Kihyun Kim"},
+        {"@type": "Person", "name": "Min-gu Kang"},
+        {"@type": "Person", "name": "Kanghyun Ryu"},
+        {"@type": "Person", "name": "Junhyoung Ha"},
+        {"@type": "Person", "name": "Jiyeon Kang"}
+      ]
+    },
+    "codeRepository": "https://github.com/Jaebeom-git/cop-limiter"
+  }
+  </script>
+
+  <style>
+    :root {
+      --bg: #fcfcfb;
+      --panel: #ffffff;
+      --soft: #f5f6f8;
+      --text: #111827;
+      --muted: #4b5563;
+      --line: #e5e7eb;
+      --accent: #0f62fe;
+      --accent-soft: #eef4ff;
+      --max: 1120px;
+      --shadow: 0 8px 30px rgba(15, 23, 42, 0.06);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; width: 100%; height: auto; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+    .wrap {
+      width: min(calc(100% - 32px), var(--max));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      backdrop-filter: blur(12px);
+      background: rgba(252, 252, 251, 0.88);
+      border-bottom: 1px solid rgba(229, 231, 235, 0.9);
+    }
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 0;
+    }
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .brand strong {
+      font-size: 16px;
+      letter-spacing: -0.02em;
+    }
+    .brand span {
+      color: var(--muted);
+      font-size: 13px;
+      max-width: 540px;
+    }
+    .section-nav {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .section-nav a {
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      font-size: 14px;
+      font-weight: 600;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+    .section-nav a:hover {
+      transform: translateY(-1px);
+      border-color: #c7d2fe;
+    }
+
+    .hero {
+      padding: 54px 0 28px;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    h1 {
+      margin: 0;
+      max-width: 980px;
+      font-size: clamp(34px, 5.8vw, 58px);
+      line-height: 1.04;
+      letter-spacing: -0.04em;
+    }
+    .hero-meta {
+      margin-top: 20px;
+      max-width: 900px;
+      color: var(--muted);
+      font-size: 17px;
+    }
+    .hero-authors {
+      margin-top: 18px;
+      font-size: 18px;
+      color: #1f2937;
+    }
+    .hero-venue {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+    .hero-links {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+    .hero-links a {
+      display: inline-flex;
+      align-items: center;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+    .hero-links a:hover {
+      transform: translateY(-1px);
+      opacity: 0.92;
+    }
+    .hero-links img {
+      display: block;
+      height: 20px;
+      width: auto;
+    }
+    .maise-word {
+      color: var(--accent);
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    section {
+      padding: 26px 0;
+    }
+    .section-head {
+      margin-bottom: 18px;
+    }
+    .section-label {
+      display: inline-block;
+      margin-bottom: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+    }
+    h2 {
+      margin: 0;
+      font-size: clamp(28px, 4vw, 40px);
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+    }
+    .section-head p {
+      margin: 10px 0 0;
+      max-width: 860px;
+      color: var(--muted);
+      font-size: 17px;
+    }
+    .section-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+    .section-actions a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.82);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.03);
+      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
+    .section-actions a:hover {
+      transform: translateY(-1px);
+      border-color: #bfd0ff;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.07);
+      background: #ffffff;
+    }
+    .section-actions a.primary {
+      color: var(--accent);
+      background: var(--accent-soft);
+      border-color: rgba(15, 98, 254, 0.18);
+    }
+    .section-actions a.primary::after,
+    .section-actions a:not(.primary)::after {
+      content: "→";
+      font-size: 12px;
+      opacity: 0.72;
+    }
+
+    .abstract-card,
+    .figure-card,
+    .citation-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .abstract-card {
+      padding: 26px;
+    }
+    .abstract-card p {
+      margin: 0 0 16px;
+      font-size: 17px;
+      color: #1f2937;
+    }
+    .abstract-card p:last-child { margin-bottom: 0; }
+
+    .figure-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+    .figure-card {
+      overflow: hidden;
+    }
+    .figure-card.wide {
+      grid-column: 1 / -1;
+    }
+    .figure-body {
+      padding: 18px 20px 20px;
+    }
+    .figure-body h3 {
+      margin: 0 0 8px;
+      font-size: 23px;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+    .figure-body p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .citation-card {
+      padding: 22px;
+    }
+    .citation-card p,
+    .citation-card li {
+      color: var(--muted);
+      font-size: 15px;
+    }
+    .citation-card ul {
+      margin: 12px 0 0;
+      padding-left: 18px;
+    }
+    .citation-card pre {
+      overflow-x: auto;
+      padding: 16px;
+      border-radius: 14px;
+      background: #111827;
+      color: #f9fafb;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    footer {
+      padding: 30px 0 56px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    @media (max-width: 900px) {
+      .figure-grid {
+        grid-template-columns: 1fr;
+      }
+      .topbar-inner {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+      .section-nav,
+      .hero-links {
+        justify-content: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="wrap topbar-inner">
+      <div class="brand">
+        <strong>MAISE · Project Page</strong>
+        <span>Joint torque estimation from daily living motion for passive sarcopenia monitoring in older adults</span>
+      </div>
+      <nav class="section-nav" aria-label="Section navigation">
+        <a href="#abstract">Abstract</a>
+        <a href="#paper">Paper</a>
+        <a href="#implementation">Implementation</a>
+        <a href="#citation">Citation</a>
+      </nav>
+    </div>
+  </div>
+
+  <main>
+    <section class="hero">
+      <div class="wrap">
+        <div class="eyebrow">Paper + Official Implementation</div>
+        <h1>Joint torque estimation from daily living motion for passive sarcopenia monitoring in older adults</h1>
+        <div class="hero-authors">Jaebeom Jo, Kihyun Kim, Min-gu Kang, Kanghyun Ryu, Junhyoung Ha, and Jiyeon Kang</div>
+        <div class="hero-venue">Journal of NeuroEngineering and Rehabilitation · Published online April 5, 2026</div>
+        <div class="hero-links" aria-label="Project links">
+          <a href="https://doi.org/10.1186/s12984-026-01962-3" target="_blank" rel="noreferrer"><img src="https://img.shields.io/badge/Paper-DOI-1d4ed8?style=flat-square" alt="Paper DOI badge"></a>
+          <a href="https://github.com/Jaebeom-git/cop-limiter" target="_blank" rel="noreferrer"><img src="https://img.shields.io/badge/Code-GitHub-1f2937?style=flat-square" alt="Code GitHub badge"></a>
+          <a href="./"><img src="https://img.shields.io/badge/Project-Page-0f766e?style=flat-square" alt="Project page badge"></a>
+        </div>
+        <p class="hero-meta">
+          MAISE is a passive, camera-based framework for estimating lower-limb joint torque from daily movement. This repository implements the CoP-Limiter and the GRF-estimation modules used to provide physically plausible force inputs for downstream torque analysis.
+        </p>
+      </div>
+    </section>
+
+    <section id="abstract">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="section-label">Abstract</span>
+          <h2>From daily motion to task-specific torque assessment in <span class="maise-word">MAISE</span></h2>
+          <p>
+            A compact summary of Motion-AI Integrated Surveillance for the Elderly (MAISE) and the CoP-constrained GRF-estimation module implemented in this repository.
+          </p>
+        </div>
+        <div class="abstract-card">
+          <p>
+            Sarcopenia is associated with falls, disability, hospitalization, and mortality, yet early assessment still depends largely on indirect measures that are difficult to deploy continuously. The paper proposes MAISE as a passive, camera-based framework that estimates lower-limb joint torque from natural daily movement.
+          </p>
+          <p>
+            To make that torque analysis feasible without force plates, the study introduces a CoP-Limiter that constrains the predicted center of pressure during ground reaction force estimation. The constraint keeps the estimate physically plausible and improves robustness on movements that were not seen during training.
+          </p>
+          <p>
+            In the older-adult evaluation reported in the paper, the framework was tested on four functional tasks that were not part of the training data. The resulting torque measures—Peak Torque, Rate of Torque Development, and Power Range—showed task-specific and joint-specific relationships with conventional sarcopenia indicators such as grip strength, gait speed, and chair-stand performance.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="paper">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="section-label">Paper</span>
+          <h2>Why <span class="maise-word">MAISE</span> matters, how it was evaluated, and what the torque plots show</h2>
+          <p>
+            Selected figures from the paper summarize the clinical motivation of the study, the task protocol used for evaluation, and the torque-level findings that connect the framework to sarcopenia-related functional assessment.
+          </p>
+          <div class="section-actions">
+            <a class="primary" href="https://doi.org/10.1186/s12984-026-01962-3" target="_blank" rel="noreferrer">Read Paper</a>
+            <a href="#citation">Citation</a>
+          </div>
+        </div>
+
+        <div class="figure-grid">
+          <article class="figure-card wide">
+            <img src="assets/figure-1-app.png" alt="Overview of the MAISE framework for passive sarcopenia monitoring and joint torque estimation">
+            <div class="figure-body">
+              <h3>Figure 1 · MAISE framework overview</h3>
+              <p>
+                Figure 1 presents the overall framework of MAISE, showing how daily movement can be linked to lower-limb torque analysis for functional sarcopenia assessment.
+              </p>
+            </div>
+          </article>
+
+          <article class="figure-card">
+            <img src="assets/figure-2-tasks.png" alt="Illustrations of the functional tasks used in the MAISE paper including chair stand, pick-up, and step-up">
+            <div class="figure-body">
+              <h3>Figure 2 · Functional task protocol</h3>
+              <p>
+                The evaluation uses four functional tasks—5-times Chair Stand, Chair Stand, Pick-Up, and Step-Up—chosen as simple, safe movements that reflect daily function in older adults.
+              </p>
+            </div>
+          </article>
+
+          <article class="figure-card">
+            <img src="assets/figure-9-torque-comparison.png" alt="Joint torque comparison between healthy and sarcopenia groups across functional tasks">
+            <div class="figure-body">
+              <h3>Figure 9 · Joint torque comparison across tasks</h3>
+              <p>
+                Figure 9 compares ankle, knee, and hip torque profiles across tasks in healthy and sarcopenic groups, highlighting task-specific functional deficits and compensatory patterns.
+              </p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="implementation">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="section-label">Implementation</span>
+          <h2>How this repository implements the CoP-constrained core of <span class="maise-word">MAISE</span></h2>
+          <p>
+            Selected implementation-related figures from the paper and appendix focus on the CoP-Limiter and the motion-based GRF-estimation pipeline implemented in this repository.
+          </p>
+          <div class="section-actions">
+            <a class="primary" href="https://github.com/Jaebeom-git/cop-limiter" target="_blank" rel="noreferrer">View GitHub</a>
+            <a href="#citation">Citation</a>
+          </div>
+        </div>
+
+        <div class="figure-grid">
+          <article class="figure-card">
+            <img src="assets/figure-4-vfb.png" alt="Virtual Foot Boundary used by the CoP-Limiter to constrain center of pressure predictions">
+            <div class="figure-body">
+              <h3>Figure 4 · Virtual Foot Boundary</h3>
+              <p>
+                Figure 4 describes the Virtual Foot Boundary (VFB), which defines the physically plausible support region used by the CoP-Limiter.
+              </p>
+            </div>
+          </article>
+
+          <article class="figure-card">
+            <img src="assets/figure-5-model.png" alt="Model diagram showing the motion-to-force estimation pipeline and CoP-Limiter component">
+            <div class="figure-body">
+              <h3>Figure 5 · Model and learning pipeline</h3>
+              <p>
+                Figure 5 shows the GRF-estimation model, including the CoP-Limiter, the regression head, and the overall pipeline used in the implementation.
+              </p>
+            </div>
+          </article>
+
+          <article class="figure-card wide">
+            <img src="assets/figure-11-qualitative-results.gif" alt="Animated qualitative comparison between baseline and CoP-Limiter models using the Transformer architecture">
+            <div class="figure-body">
+              <h3>Figure 11 · Qualitative comparison of BL and CL</h3>
+              <p>
+                Figure 11 compares the Baseline (BL) and CoP-Limiter (CL) models with Transformer, showing Ground Truth in red, the estimated GRF in blue, and the VFB in green. The CL model keeps the CoP inside the VFB more consistently in both validation and unseen test examples.
+              </p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="citation">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="section-label">Citation</span>
+          <h2>Citation</h2>
+          <p>
+            If this project is useful in your work, please cite the paper and refer to this repository as the implementation companion.
+          </p>
+        </div>
+
+        <div class="citation-card">
+          <pre>@article{jo2026joint,
+  title   = {Joint torque estimation from daily living motion for passive sarcopenia monitoring in older adults},
+  author  = {Jo, Jaebeom and Kim, Kihyun and Kang, Min-gu and Ryu, Kanghyun and Ha, Junhyoung and Kang, Jiyeon},
+  journal = {Journal of NeuroEngineering and Rehabilitation},
+  year    = {2026},
+  doi     = {10.1186/s12984-026-01962-3}
+}</pre>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      A project page for <em>Joint torque estimation from daily living motion for passive sarcopenia monitoring in older adults</em>.
+    </div>
+  </footer>
+</body>
+</html>
