@@ -1,15 +1,10 @@
-import fs from "node:fs";
-import path from "node:path";
 import { firstParagraph, getString, getStringArray, readMarkdown } from "./markdownContent";
-import { absoluteUrl, withBasePath } from "./site";
+import { absoluteUrl } from "./site";
 
-const projectPagePath = path.join(process.cwd(), "content", "papers", "cop-limiter", "project-page.html");
-const retiredProjectUrl = "https://jaebeom-git.github.io/cop-limiter/";
 const portfolioProjectPath = "/projects/cop-limiter/";
 const portfolioProjectUrl = absoluteUrl(portfolioProjectPath);
-const portfolioAssetPath = withBasePath("/papers/cop-limiter/");
 
-const copLimiterMarkdown = readMarkdown("projects/cop-limiter.md");
+const copLimiterMarkdown = readMarkdown("projects/cop-limiter/index.md");
 
 export const copLimiterProject = {
   slug: "cop-limiter",
@@ -22,9 +17,9 @@ export const copLimiterProject = {
   doi: getString(copLimiterMarkdown, "doi", "10.1186/s12984-026-01962-3"),
   codeUrl: getString(copLimiterMarkdown, "codeUrl", "https://github.com/Jaebeom-git/cop-limiter"),
   routePath: portfolioProjectPath,
-  heroImage: getString(copLimiterMarkdown, "heroImage", "/papers/cop-limiter/figure-1-app.png"),
+  heroImage: getString(copLimiterMarkdown, "heroImage", "/projects/cop-limiter/figure-1-app.png"),
   summary: firstParagraph(copLimiterMarkdown.body),
-  authors: ["Jaebeom Jo", "Kihyun Kim", "Min-gu Kang", "Kanghyun Ryu", "Junhyoung Ha", "Jiyeon Kang"],
+  authors: getStringArray(copLimiterMarkdown, "authors", ["Jaebeom Jo", "Kihyun Kim", "Min-gu Kang", "Kanghyun Ryu", "Junhyoung Ha", "Jiyeon Kang"]),
   keywords: getStringArray(copLimiterMarkdown, "keywords", [
     "MAISE",
     "sarcopenia",
@@ -37,34 +32,6 @@ export const copLimiterProject = {
     "cop-limiter",
   ]),
 } as const;
-
-function extractBetween(source: string, startPattern: RegExp, endPattern: RegExp, label: string) {
-  const startMatch = source.match(startPattern);
-  const endMatch = source.match(endPattern);
-  if (!startMatch || startMatch.index === undefined || !endMatch || endMatch.index === undefined) {
-    throw new Error(`Could not extract ${label} from CoP-Limiter project page`);
-  }
-  const start = startMatch.index + startMatch[0].length;
-  return source.slice(start, endMatch.index).trim();
-}
-
-function rewriteProjectPageHtml(html: string) {
-  return html
-    .replaceAll(retiredProjectUrl, portfolioProjectUrl)
-    .replaceAll('href="./"', `href="${withBasePath(portfolioProjectPath)}"`)
-    .replaceAll('src="assets/', `src="${portfolioAssetPath}`);
-}
-
-export function getCopLimiterProjectPage() {
-  const html = fs.readFileSync(projectPagePath, "utf8");
-  const style = extractBetween(html, /<style>/i, /<\/style>/i, "style");
-  const body = extractBetween(html, /<body>/i, /<\/body>/i, "body");
-
-  return {
-    style,
-    body: rewriteProjectPageHtml(body),
-  };
-}
 
 export const copLimiterJsonLd = {
   "@context": "https://schema.org",

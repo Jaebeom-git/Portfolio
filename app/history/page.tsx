@@ -83,7 +83,8 @@ export default function HistoryPage() {
         <div className="nav-links">
           <Link href="/">Main</Link>
           <Link href="/cv/">Curriculum Vitae</Link>
-          <Link href="/projects/">Projects</Link>
+          <Link href="/projects/">Research and Projects</Link>
+          <Link href="/coursework/">Coursework and Activities</Link>
         </div>
       </nav>
 

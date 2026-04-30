@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { featuredProjects, portfolioSections } from "@/src/lib/portfolioData";
+import { allProjects, portfolioSections } from "@/src/lib/portfolioData";
 import { absoluteUrl } from "@/src/lib/site";
 
 export const dynamic = "force-static";
@@ -23,7 +23,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly" as const,
       priority: 0.8,
     })),
-    ...featuredProjects.map((project) => ({
+    ...allProjects.map((project) => ({
       url: absoluteUrl(project.routePath),
       lastModified: lastModified(project.published),
       changeFrequency: "monthly" as const,

@@ -23,6 +23,7 @@ const projectDocs = {
   index: readMarkdown("projects/index.md"),
   pages: readMarkdownDirectory("projects").filter((doc) => doc.slug !== "index"),
 };
+const courseworkDoc = readMarkdown("coursework/index.md");
 const historyDocs = {
   index: readMarkdown("history/index.md"),
   pages: readMarkdownDirectory("history").filter((doc) => doc.slug !== "index"),
@@ -81,11 +82,19 @@ export const portfolioSections = [
     anchor: "#history",
     summary: "Education and experience timeline",
   },
+  {
+    icon: "🧩",
+    label: "Coursework and Activities",
+    href: "/coursework/",
+    anchor: "#coursework",
+    summary: "Coursework, competitions, and activities",
+  },
 ] as const;
 
 export const pageSummaries = {
   cv: pageSummary(cvDocs.summary, "C.V."),
   projects: pageSummary(projectDocs.index, "Research and Projects"),
+  coursework: pageSummary(courseworkDoc, "Coursework and Activities"),
   history: pageSummary(historyDocs.index, "Education and Experience"),
 } as const;
 
@@ -110,26 +119,65 @@ export const researchExperiences = markdownList(cvDocs.researchExperiences.body)
 export const awards = markdownList(cvDocs.awards.body);
 export const skills = markdownList(cvDocs.skills.body);
 
+function inferProjectGroup(doc: ReturnType<typeof readMarkdown>, category: string, isPaper: boolean) {
+  const explicitGroup = getString(doc, "group", "").toLowerCase();
+  if (["research", "coursework", "activity"].includes(explicitGroup)) return explicitGroup;
+
+  const normalizedCategory = category.toLowerCase();
+  if (normalizedCategory.includes("competition") || /domestic conferences?/i.test(doc.body)) return "research";
+  if (isPaper || normalizedCategory.includes("paper") || normalizedCategory.includes("research")) return "research";
+  if (normalizedCategory.includes("activity")) return "activity";
+  return "coursework";
+}
+
 const projectCards = projectDocs.pages.map((doc) => {
   const slug = doc.slug ?? "";
   const isCopLimiter = slug === copLimiterProject.slug;
+  const isPaper = getString(doc, "isPaper", isCopLimiter ? "true" : "false").toLowerCase() === "true";
+  const category = getString(doc, "category", isPaper ? "Paper" : "Project");
+  const group = inferProjectGroup(doc, category, isPaper);
   return {
     slug,
     title: getString(doc, "title", isCopLimiter ? copLimiterProject.title : slug),
+    titleSuffix: getString(doc, "titleSuffix", ""),
     shortTitle: getString(doc, "shortTitle", isCopLimiter ? copLimiterProject.shortTitle : slug),
     subtitle: getString(doc, "subtitle", firstParagraph(doc.body)),
+    layout: getString(doc, "layout", "default-project"),
+    category,
+    group,
+    status: getString(doc, "status", ""),
+    period: getString(doc, "period", ""),
     year: getString(doc, "year", ""),
+    startDate: getString(doc, "startDate", ""),
+    endDate: getString(doc, "endDate", ""),
     published: getString(doc, "published", ""),
+    publishedLabel: getString(doc, "publishedLabel", ""),
     venue: getString(doc, "venue", ""),
-    routePath: isCopLimiter ? copLimiterProject.routePath : `/projects/${slug}/`,
+    doi: getString(doc, "doi", ""),
+    codeUrl: getString(doc, "codeUrl", ""),
+    source: getString(doc, "source", ""),
+    isPaper,
+    routePath: isCopLimiter ? copLimiterProject.routePath : group === "research" ? `/projects/${slug}/` : `/coursework/${slug}/`,
     heroImage: getString(doc, "heroImage", isCopLimiter ? copLimiterProject.heroImage : ""),
+    authors: getStringArray(doc, "authors", []),
     keywords: getStringArray(doc, "keywords", []),
+    body: doc.body,
+    sections: markdownSections(doc.body),
+    sortDate: getString(doc, "endDate", getString(doc, "published", getString(doc, "startDate", ""))),
   };
 });
 
-export const featuredProjects = [...projectCards].sort(
-  (a, b) => sortableDate(b.published) - sortableDate(a.published),
+const sortedProjectCards = [...projectCards].sort(
+  (a, b) => sortableDate(b.sortDate || b.published || b.startDate) - sortableDate(a.sortDate || a.published || a.startDate),
 );
+
+export const allProjects = sortedProjectCards;
+
+export const featuredProjects = allProjects.filter((project) => project.group === "research");
+
+export const courseworkProjects = allProjects.filter((project) => project.group !== "research");
+
+export const paperProjects = featuredProjects.filter((project) => project.isPaper);
 
 function sortableDate(value: string) {
   const timestamp = Date.parse(value);

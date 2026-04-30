@@ -64,7 +64,8 @@ export default function CvPage() {
         </Link>
         <div className="nav-links">
           <Link href="/">Main</Link>
-          <Link href="/projects/">Project</Link>
+          <Link href="/projects/">Research and Projects</Link>
+          <Link href="/coursework/">Coursework and Activities</Link>
           <Link href="/history/">History</Link>
         </div>
       </nav>

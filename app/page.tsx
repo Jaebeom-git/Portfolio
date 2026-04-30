@@ -1,6 +1,7 @@
 import Link from "next/link";
 import {
   cvHighlights,
+  courseworkProjects,
   featuredProjects,
   historyItems,
   pageSummaries,
@@ -10,9 +11,14 @@ import {
 import { site, withBasePath } from "@/src/lib/site";
 
 const historyPreviewLimit = 2;
+const projectPreviewLimit = 4;
+const courseworkPreviewLimit = 4;
 
 export default function Home() {
-  const projectPreview = featuredProjects;
+  const projectPreview = featuredProjects.slice(0, projectPreviewLimit);
+  const hiddenProjectCount = Math.max(featuredProjects.length - projectPreview.length, 0);
+  const courseworkPreview = courseworkProjects.slice(0, courseworkPreviewLimit);
+  const hiddenCourseworkCount = Math.max(courseworkProjects.length - courseworkPreview.length, 0);
   const historyPreview = historyItems.slice(0, historyPreviewLimit);
   const hiddenHistoryCount = Math.max(historyItems.length - historyPreview.length, 0);
 
@@ -69,7 +75,7 @@ export default function Home() {
           <h2>{pageSummaries.cv.title}</h2>
           <p>{pageSummaries.cv.description}</p>
           <Link className="button secondary" href="/cv/">
-            Open C.V.
+            Open
           </Link>
         </div>
         <div className="mini-card-grid cv-preview-grid">
@@ -84,27 +90,37 @@ export default function Home() {
 
       <section id="projects" className="section-shell section-card cv-grid portfolio-section-card">
         <div>
-          <p className="eyebrow">Projects</p>
+          <p className="eyebrow">Research and Projects</p>
           <h2>{pageSummaries.projects.title}</h2>
           <p>{pageSummaries.projects.description}</p>
           <Link className="button secondary" href="/projects/">
-            Open Project
+            Open
           </Link>
         </div>
 
-        <div className="project-gallery project-preview-gallery">
-          {projectPreview.map((project) => (
-            <Link className="project-gallery-card" href={project.routePath} key={project.slug}>
-              {project.heroImage ? (
-                <img src={withBasePath(project.heroImage)} alt={`${project.shortTitle} project preview`} />
-              ) : null}
-              <div>
-                <p className="paper-meta">{[project.venue, project.year].filter(Boolean).join(" · ")}</p>
-                <h3>{project.shortTitle}</h3>
-                <p>{project.title}</p>
-              </div>
-            </Link>
-          ))}
+        <div className="project-preview-panel">
+          <div>
+            <p className="paper-meta">{featuredProjects.length} research pages</p>
+            <h3>Recent research</h3>
+          </div>
+          <div className="project-preview-strip">
+            {projectPreview.map((project) => (
+              <article className="project-preview-tile" key={project.slug}>
+                {project.heroImage ? (
+                  <img src={withBasePath(project.heroImage)} alt={`${project.shortTitle} project preview`} />
+                ) : (
+                  <span className="project-placeholder" aria-hidden="true">{project.isPaper ? "📄" : "📌"}</span>
+                )}
+                <span>{project.shortTitle}</span>
+              </article>
+            ))}
+            {hiddenProjectCount ? (
+              <article className="project-preview-tile project-preview-more" aria-label={`${hiddenProjectCount} more research project pages`}>
+                <span aria-hidden="true">…</span>
+                <strong>+{hiddenProjectCount}</strong>
+              </article>
+            ) : null}
+          </div>
         </div>
       </section>
 
@@ -114,7 +130,7 @@ export default function Home() {
           <h2>{pageSummaries.history.title}</h2>
           <p>{pageSummaries.history.description}</p>
           <Link className="button secondary" href="/history/">
-            Open History
+            Open
           </Link>
         </div>
         <div className="timeline compact-timeline">
@@ -135,13 +151,46 @@ export default function Home() {
           ))}
           {hiddenHistoryCount ? (
             <article className="timeline-item more-item" aria-label={`${hiddenHistoryCount} more history items`}>
-              <span className="notion-icon">…</span>
-              <div>
-                <h3>More</h3>
-                <p>{hiddenHistoryCount} more item{hiddenHistoryCount > 1 ? "s" : ""} in History.</p>
-              </div>
+              <span aria-hidden="true">…</span>
+              <strong>+{hiddenHistoryCount}</strong>
             </article>
           ) : null}
+        </div>
+      </section>
+
+      <section id="coursework" className="section-shell section-card cv-grid portfolio-section-card">
+        <div>
+          <p className="eyebrow">Coursework and Activities</p>
+          <h2>{pageSummaries.coursework.title}</h2>
+          <p>{pageSummaries.coursework.description}</p>
+          <Link className="button secondary" href="/coursework/">
+            Open
+          </Link>
+        </div>
+
+        <div className="project-preview-panel">
+          <div>
+            <p className="paper-meta">{courseworkProjects.length} pages</p>
+            <h3>Recent coursework</h3>
+          </div>
+          <div className="project-preview-strip">
+            {courseworkPreview.map((project) => (
+              <article className="project-preview-tile" key={project.slug}>
+                {project.heroImage ? (
+                  <img src={withBasePath(project.heroImage)} alt={`${project.shortTitle} project preview`} />
+                ) : (
+                  <span className="project-placeholder" aria-hidden="true">{project.category.includes("Activity") ? "🎸" : "🧩"}</span>
+                )}
+                <span>{project.shortTitle}</span>
+              </article>
+            ))}
+            {hiddenCourseworkCount ? (
+              <article className="project-preview-tile project-preview-more" aria-label={`${hiddenCourseworkCount} more coursework and activity pages`}>
+                <span aria-hidden="true">…</span>
+                <strong>+{hiddenCourseworkCount}</strong>
+              </article>
+            ) : null}
+          </div>
         </div>
       </section>
     </main>

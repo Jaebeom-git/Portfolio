@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
-import { copLimiterProject, copLimiterJsonLd, getCopLimiterProjectPage } from "@/src/lib/copLimiterProjectPage";
+import { copLimiterProject, copLimiterJsonLd } from "@/src/lib/copLimiterProjectPage";
+import { featuredProjects } from "@/src/lib/portfolioData";
+import { PaperCopLimiterLayout } from "@/src/project-layouts/paper-cop-limiter";
 import { absoluteUrl } from "@/src/lib/site";
 
 const title = "MAISE: Joint Torque Estimation for Passive Sarcopenia Monitoring | Paper + Code";
@@ -11,14 +13,7 @@ export const metadata: Metadata = {
   title,
   description,
   keywords,
-  authors: [
-    { name: "Jaebeom Jo" },
-    { name: "Kihyun Kim" },
-    { name: "Min-gu Kang" },
-    { name: "Kanghyun Ryu" },
-    { name: "Junhyoung Ha" },
-    { name: "Jiyeon Kang" },
-  ],
+  authors: copLimiterProject.authors.map((name) => ({ name })),
   robots: {
     index: true,
     follow: true,
@@ -36,24 +31,20 @@ export const metadata: Metadata = {
     title,
     description: "Project page for MAISE and the CoP-constrained GRF-estimation code used to support motion-based joint torque analysis.",
     url: absoluteUrl(copLimiterProject.routePath),
-    images: [{ url: absoluteUrl("/papers/cop-limiter/figure-1-app.png") }],
+    images: [{ url: absoluteUrl("/projects/cop-limiter/figure-1-app.png") }],
   },
   twitter: {
     card: "summary_large_image",
     title,
     description: "Project page for MAISE and the CoP-constrained GRF-estimation code used to support motion-based joint torque analysis.",
-    images: [absoluteUrl("/papers/cop-limiter/figure-1-app.png")],
+    images: [absoluteUrl("/projects/cop-limiter/figure-1-app.png")],
   },
 };
 
 export default function CopLimiterProjectPage() {
-  const { style, body } = getCopLimiterProjectPage();
-
-  return (
-    <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(copLimiterJsonLd) }} />
-      <style dangerouslySetInnerHTML={{ __html: style }} />
-      <div dangerouslySetInnerHTML={{ __html: body }} />
-    </>
-  );
+  const project = featuredProjects.find((item) => item.slug === copLimiterProject.slug);
+  if (!project) {
+    throw new Error("CoP-Limiter project content is missing");
+  }
+  return <PaperCopLimiterLayout project={project} jsonLd={copLimiterJsonLd} />;
 }

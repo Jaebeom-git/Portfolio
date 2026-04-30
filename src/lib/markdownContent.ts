@@ -56,11 +56,18 @@ export function readMarkdownDirectory(relativeDir: string) {
   const absoluteDir = path.join(contentRoot, relativeDir);
   return fs
     .readdirSync(absoluteDir)
-    .filter((file) => file.endsWith(".md"))
+    .filter((file) => {
+      const absolutePath = path.join(absoluteDir, file);
+      if (file.endsWith(".md")) return true;
+      return fs.statSync(absolutePath).isDirectory() && fs.existsSync(path.join(absolutePath, "index.md"));
+    })
     .sort()
     .map((file) => {
-      const doc = readMarkdown(path.join(relativeDir, file));
-      return { ...doc, slug: file.replace(/\.md$/, "") };
+      const absolutePath = path.join(absoluteDir, file);
+      const isDirectory = fs.statSync(absolutePath).isDirectory();
+      const relativePath = isDirectory ? path.join(relativeDir, file, "index.md") : path.join(relativeDir, file);
+      const doc = readMarkdown(relativePath);
+      return { ...doc, slug: isDirectory ? file : file.replace(/\.md$/, "") };
     });
 }
 

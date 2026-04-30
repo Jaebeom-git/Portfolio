@@ -1,6 +1,6 @@
 ---
 title: Research and Projects
-description: Selected research and implementation pages.
+description: Search-indexable research and paper project pages sorted by date.
 ---
 
-Selected research and implementation pages.
+Search-indexable research and paper project pages sorted by date.

@@ -1,22 +1,22 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ProjectArchive } from "@/src/components/project-archive";
-import { featuredProjects, pageSummaries } from "@/src/lib/portfolioData";
+import { courseworkProjects, pageSummaries } from "@/src/lib/portfolioData";
 import { absoluteUrl, site, withBasePath } from "@/src/lib/site";
 
 export const metadata: Metadata = {
-  title: pageSummaries.projects.title,
-  description: pageSummaries.projects.description,
-  alternates: { canonical: absoluteUrl("/projects/") },
+  title: pageSummaries.coursework.title,
+  description: pageSummaries.coursework.description,
+  alternates: { canonical: absoluteUrl("/coursework/") },
   openGraph: {
-    title: `${pageSummaries.projects.title} | Jaebeom Jo`,
-    description: pageSummaries.projects.description,
-    url: absoluteUrl("/projects/"),
+    title: `${pageSummaries.coursework.title} | Jaebeom Jo`,
+    description: pageSummaries.coursework.description,
+    url: absoluteUrl("/coursework/"),
   },
 };
 
-export default function ProjectsPage() {
-  const archiveProjects = featuredProjects.map((project) => ({
+export default function CourseworkPage() {
+  const archiveProjects = courseworkProjects.map((project) => ({
     ...project,
     heroImage: project.heroImage ? withBasePath(project.heroImage) : "",
   }));
@@ -31,18 +31,18 @@ export default function ProjectsPage() {
         <div className="nav-links">
           <Link href="/">Main</Link>
           <Link href="/cv/">Curriculum Vitae</Link>
-          <Link href="/coursework/">Coursework and Activities</Link>
+          <Link href="/projects/">Research and Projects</Link>
           <Link href="/history/">History</Link>
         </div>
       </nav>
 
       <section className="section-shell page-header">
-        <p className="eyebrow">Research and Projects</p>
-        <h1>{pageSummaries.projects.title}</h1>
-        <p>{pageSummaries.projects.description}</p>
+        <p className="eyebrow">Coursework and Activities</p>
+        <h1>{pageSummaries.coursework.title}</h1>
+        <p>{pageSummaries.coursework.description}</p>
       </section>
 
-      <ProjectArchive mode="research" projects={archiveProjects} />
+      <ProjectArchive mode="coursework" projects={archiveProjects} />
     </main>
   );
 }
