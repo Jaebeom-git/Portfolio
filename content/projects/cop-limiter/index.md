@@ -3,7 +3,7 @@ title: Joint torque estimation from daily living motion for passive sarcopenia m
 shortTitle: MAISE / CoP-Limiter
 subtitle: Physically plausible ground-reaction-force estimation for motion-based joint torque analysis
 layout: paper-cop-limiter
-category: Paper
+category: Journal Paper
 isPaper: true
 status: Published
 period: 2023 ~ 2026

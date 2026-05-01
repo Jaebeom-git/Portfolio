@@ -1,6 +1,6 @@
 ---
 title: Master’s Degree
-detail: GIST · AI Convergence / Robotics Program · 2023–2025
+detail: GIST · AI Convergence / Robotics Program
 period: Aug. 2023 ~ Aug. 2025
 startDate: 2023-08-01
 endDate: 2025-08-31

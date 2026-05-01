@@ -8,6 +8,9 @@ type PaperCopLimiterProject = {
   title: string;
   subtitle: string;
   shortTitle: string;
+  category: string;
+  status: string;
+  year: string;
   venue: string;
   publishedLabel: string;
   published: string;
@@ -124,7 +127,7 @@ export function PaperCopLimiterLayout({ project, jsonLd }: { project: PaperCopLi
       <div className="topbar">
         <div className="wrap topbar-inner">
           <div className="brand">
-            <strong>{project.shortTitle} · Project Page</strong>
+            <strong><span className="brand-title">{project.shortTitle}</span><span className="brand-kind"> · Project Page</span></strong>
             <span>{project.title}</span>
           </div>
           <nav className="section-nav" aria-label="Section navigation">
@@ -139,10 +142,11 @@ export function PaperCopLimiterLayout({ project, jsonLd }: { project: PaperCopLi
       <main>
         <section className="hero">
           <div className="wrap">
-            <div className="eyebrow">Paper + Official Implementation</div>
+            <div className="eyebrow">Journal Paper + Official Implementation</div>
             <h1>{project.title}</h1>
             {project.authors.length ? <div className="hero-authors">{project.authors.join(", ").replace(/, ([^,]*)$/, ", and $1")}</div> : null}
-            <div className="hero-venue">{[project.venue, project.publishedLabel || project.published].filter(Boolean).join(" · ")}</div>
+            <div className="hero-venue">{[project.category, project.year || project.published, project.status].filter(Boolean).join(" · ")}</div>
+            {project.venue ? <div className="hero-venue-detail">{project.venue}</div> : null}
             <div className="hero-links" aria-label="Project links">
               {doiUrl ? <a href={doiUrl} target="_blank" rel="noreferrer"><img src="https://img.shields.io/badge/Paper-DOI-1d4ed8?style=flat-square" alt="Paper DOI badge" /></a> : null}
               {project.codeUrl ? <a href={project.codeUrl} target="_blank" rel="noreferrer"><img src="https://img.shields.io/badge/Code-GitHub-1f2937?style=flat-square" alt="Code GitHub badge" /></a> : null}

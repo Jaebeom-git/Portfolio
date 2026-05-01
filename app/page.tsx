@@ -1,7 +1,7 @@
 import Link from "next/link";
 import {
   cvHighlights,
-  courseworkProjects,
+  activityProjects,
   featuredProjects,
   historyItems,
   pageSummaries,
@@ -12,13 +12,13 @@ import { site, withBasePath } from "@/src/lib/site";
 
 const historyPreviewLimit = 2;
 const projectPreviewLimit = 4;
-const courseworkPreviewLimit = 4;
+const activityPreviewLimit = 4;
 
 export default function Home() {
   const projectPreview = featuredProjects.slice(0, projectPreviewLimit);
   const hiddenProjectCount = Math.max(featuredProjects.length - projectPreview.length, 0);
-  const courseworkPreview = courseworkProjects.slice(0, courseworkPreviewLimit);
-  const hiddenCourseworkCount = Math.max(courseworkProjects.length - courseworkPreview.length, 0);
+  const activityPreview = activityProjects.slice(0, activityPreviewLimit);
+  const hiddenActivityCount = Math.max(activityProjects.length - activityPreview.length, 0);
   const historyPreview = historyItems.slice(0, historyPreviewLimit);
   const hiddenHistoryCount = Math.max(historyItems.length - historyPreview.length, 0);
 
@@ -92,7 +92,7 @@ export default function Home() {
         <div>
           <p className="eyebrow">Research and Projects</p>
           <h2>{pageSummaries.projects.title}</h2>
-          <p>{pageSummaries.projects.description}</p>
+          {pageSummaries.projects.description ? <p>{pageSummaries.projects.description}</p> : null}
           <Link className="button secondary" href="/projects/">
             Open
           </Link>
@@ -158,23 +158,24 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="coursework" className="section-shell section-card cv-grid portfolio-section-card">
+{activityProjects.length ? (
+      <section id="activities" className="section-shell section-card cv-grid portfolio-section-card">
         <div>
           <p className="eyebrow">Coursework and Activities</p>
-          <h2>{pageSummaries.coursework.title}</h2>
-          <p>{pageSummaries.coursework.description}</p>
-          <Link className="button secondary" href="/coursework/">
+          <h2>{pageSummaries.activities.title}</h2>
+          {pageSummaries.activities.description ? <p>{pageSummaries.activities.description}</p> : null}
+          <Link className="button secondary" href="/activities/">
             Open
           </Link>
         </div>
 
         <div className="project-preview-panel">
           <div>
-            <p className="paper-meta">{courseworkProjects.length} pages</p>
-            <h3>Recent coursework</h3>
+            <p className="paper-meta">{activityProjects.length} pages</p>
+            <h3>Recent activities</h3>
           </div>
           <div className="project-preview-strip">
-            {courseworkPreview.map((project) => (
+            {activityPreview.map((project) => (
               <article className="project-preview-tile" key={project.slug}>
                 {project.heroImage ? (
                   <img src={withBasePath(project.heroImage)} alt={`${project.shortTitle} project preview`} />
@@ -184,15 +185,16 @@ export default function Home() {
                 <span>{project.shortTitle}</span>
               </article>
             ))}
-            {hiddenCourseworkCount ? (
-              <article className="project-preview-tile project-preview-more" aria-label={`${hiddenCourseworkCount} more coursework and activity pages`}>
+            {hiddenActivityCount ? (
+              <article className="project-preview-tile project-preview-more" aria-label={`${hiddenActivityCount} more activity pages`}>
                 <span aria-hidden="true">…</span>
-                <strong>+{hiddenCourseworkCount}</strong>
+                <strong>+{hiddenActivityCount}</strong>
               </article>
             ) : null}
           </div>
         </div>
       </section>
+      ) : null}
     </main>
   );
 }

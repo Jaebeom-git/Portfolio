@@ -15,13 +15,13 @@ notionUrl: https://www.notion.so/4919fb8ea9c642bfa76fec145caec9a5
 
 ## Education
 
-- **Bachelor’s Degree**  
-  Chungnam National University, Mar. 2017 ~ Aug. 2023  
-  Department of Mechatronics Engineering, Daejeon, Korea  
+- **Bachelor’s Degree**<br />
+  Chungnam National University, Mar. 2017 ~ Aug. 2023<br />
+  Department of Mechatronics Engineering, Daejeon, Korea<br />
   GPA: 4.06/4.50, Major GPA: 4.17/4.50
 
-- **Master’s Degree**  
-  GIST (Gwangju Institute of Science and Technology), Aug. 2023 ~ Aug. 2025 (Expected)  
+- **Master’s Degree**<br />
+  GIST (Gwangju Institute of Science and Technology), Aug. 2023 ~ Aug. 2025<br />
   Department of AI Convergence (Robotics Program), Gwangju, Korea
 
 ## Research Interest

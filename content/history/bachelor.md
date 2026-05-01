@@ -1,6 +1,6 @@
 ---
 title: Bachelor’s Degree
-detail: Chungnam National University · Mechatronics Engineering · 2017–2023
+detail: Chungnam National University · Mechatronics Engineering
 period: Mar. 2017 ~ Aug. 2023
 startDate: 2017-03-01
 endDate: 2023-08-31

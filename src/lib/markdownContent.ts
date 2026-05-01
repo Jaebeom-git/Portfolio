@@ -52,8 +52,15 @@ export function readMarkdown(relativePath: string): MarkdownDocument {
   return { data, body: body.trim(), relativePath };
 }
 
+export function readOptionalMarkdown(relativePath: string): MarkdownDocument {
+  const absolutePath = path.join(contentRoot, relativePath);
+  if (!fs.existsSync(absolutePath)) return { data: {}, body: "", relativePath };
+  return readMarkdown(relativePath);
+}
+
 export function readMarkdownDirectory(relativeDir: string) {
   const absoluteDir = path.join(contentRoot, relativeDir);
+  if (!fs.existsSync(absoluteDir)) return [];
   return fs
     .readdirSync(absoluteDir)
     .filter((file) => {

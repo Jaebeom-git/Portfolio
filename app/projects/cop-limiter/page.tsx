@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { copLimiterProject, copLimiterJsonLd } from "@/src/lib/copLimiterProjectPage";
-import { featuredProjects } from "@/src/lib/portfolioData";
+import { projectPages } from "@/src/lib/portfolioData";
 import { PaperCopLimiterLayout } from "@/src/project-layouts/paper-cop-limiter";
 import { absoluteUrl } from "@/src/lib/site";
 
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
 };
 
 export default function CopLimiterProjectPage() {
-  const project = featuredProjects.find((item) => item.slug === copLimiterProject.slug);
+  const project = projectPages.find((item) => item.slug === copLimiterProject.slug);
   if (!project) {
     throw new Error("CoP-Limiter project content is missing");
   }

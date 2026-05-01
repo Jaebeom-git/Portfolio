@@ -2,8 +2,11 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ProjectDetailPage } from "@/src/components/project-detail-page";
 import { copLimiterJsonLd } from "@/src/lib/copLimiterProjectPage";
-import { featuredProjects } from "@/src/lib/portfolioData";
+import { projectPages } from "@/src/lib/portfolioData";
 import { PaperCopLimiterLayout } from "@/src/project-layouts/paper-cop-limiter";
+import { PosterRlScalingLayout } from "@/src/project-layouts/poster-rl-scaling";
+import { ConferenceOralPaperLayout } from "@/src/project-layouts/conference-oral-paper";
+import { ResearchProjectLayout } from "@/src/project-layouts/research-project";
 import { absoluteUrl } from "@/src/lib/site";
 
 type ProjectPageProps = {
@@ -13,12 +16,12 @@ type ProjectPageProps = {
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return featuredProjects.map((project) => ({ slug: project.slug }));
+  return projectPages.map((project) => ({ slug: project.slug }));
 }
 
 export async function generateMetadata({ params }: ProjectPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const project = featuredProjects.find((item) => item.slug === slug);
+  const project = projectPages.find((item) => item.slug === slug);
   if (!project) return {};
 
   return {
@@ -54,11 +57,20 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
 
 export default async function ProjectPage({ params }: ProjectPageProps) {
   const { slug } = await params;
-  const project = featuredProjects.find((item) => item.slug === slug);
+  const project = projectPages.find((item) => item.slug === slug);
   if (!project) notFound();
 
   if (project.layout === "paper-cop-limiter") {
     return <PaperCopLimiterLayout project={project} jsonLd={copLimiterJsonLd} />;
+  }
+  if (project.layout === "poster-rl-scaling") {
+    return <PosterRlScalingLayout project={project} />;
+  }
+  if (project.layout === "conference-oral-paper") {
+    return <ConferenceOralPaperLayout project={project} />;
+  }
+  if (project.layout === "research-project") {
+    return <ResearchProjectLayout project={project} />;
   }
   return <ProjectDetailPage project={project} backHref="/projects/" backLabel="Back to Research and Projects" />;
 }

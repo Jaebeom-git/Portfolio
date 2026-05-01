@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ProjectArchive } from "@/src/components/project-archive";
-import { featuredProjects, pageSummaries } from "@/src/lib/portfolioData";
+import { activityProjects, featuredProjects, pageSummaries } from "@/src/lib/portfolioData";
 import { absoluteUrl, site, withBasePath } from "@/src/lib/site";
 
 export const metadata: Metadata = {
@@ -31,7 +31,7 @@ export default function ProjectsPage() {
         <div className="nav-links">
           <Link href="/">Main</Link>
           <Link href="/cv/">Curriculum Vitae</Link>
-          <Link href="/coursework/">Coursework and Activities</Link>
+          {activityProjects.length ? <Link href="/activities/">Coursework and Activities</Link> : null}
           <Link href="/history/">History</Link>
         </div>
       </nav>
@@ -39,7 +39,7 @@ export default function ProjectsPage() {
       <section className="section-shell page-header">
         <p className="eyebrow">Research and Projects</p>
         <h1>{pageSummaries.projects.title}</h1>
-        <p>{pageSummaries.projects.description}</p>
+        {pageSummaries.projects.description ? <p>{pageSummaries.projects.description}</p> : null}
       </section>
 
       <ProjectArchive mode="research" projects={archiveProjects} />

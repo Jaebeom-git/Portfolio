@@ -4,6 +4,7 @@ import {
   awards,
   cvHighlights,
   education,
+  activityProjects,
   pageSummaries,
   profile,
   publications,
@@ -54,6 +55,16 @@ function educationLogo(lines: string[]) {
   return "";
 }
 
+function tocShortLabel(title: string) {
+  const labels: Record<string, string> = {
+    Education: "Edu.",
+    Publications: "Pubs.",
+    Experience: "Exp.",
+    "Awards and Honors": "Awards",
+  };
+  return labels[title] ?? title;
+}
+
 export default function CvPage() {
   return (
     <main className="notion-page">
@@ -65,7 +76,7 @@ export default function CvPage() {
         <div className="nav-links">
           <Link href="/">Main</Link>
           <Link href="/projects/">Research and Projects</Link>
-          <Link href="/coursework/">Coursework and Activities</Link>
+          {activityProjects.length ? <Link href="/activities/">Coursework and Activities</Link> : null}
           <Link href="/history/">History</Link>
         </div>
       </nav>
@@ -95,12 +106,14 @@ export default function CvPage() {
           <nav>
             <Link href="#contact">
               <span>✉️</span>
-              Contact
+              <span className="toc-label-full">Contact</span>
+              <span className="toc-label-short">Contact</span>
             </Link>
             {cvHighlights.map((item) => (
               <Link href={item.href} key={item.title}>
                 <span>{item.icon}</span>
-                {item.title}
+                <span className="toc-label-full">{item.title}</span>
+                <span className="toc-label-short">{tocShortLabel(item.title)}</span>
               </Link>
             ))}
           </nav>

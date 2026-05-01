@@ -18,7 +18,7 @@ type ArchiveProject = {
   keywords: string[];
 };
 
-type ArchiveMode = "research" | "coursework";
+type ArchiveMode = "research" | "activities";
 
 function sortValue(project: ArchiveProject) {
   const parsed = Date.parse(project.sortDate || project.published || project.startDate);

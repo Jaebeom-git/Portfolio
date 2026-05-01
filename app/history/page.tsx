@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import Link from "next/link";
-import { historyItems, pageSummaries } from "@/src/lib/portfolioData";
+import { activityProjects, historyItems, pageSummaries } from "@/src/lib/portfolioData";
 import { absoluteUrl, site, withBasePath } from "@/src/lib/site";
 
 export const metadata: Metadata = {
@@ -84,7 +84,7 @@ export default function HistoryPage() {
           <Link href="/">Main</Link>
           <Link href="/cv/">Curriculum Vitae</Link>
           <Link href="/projects/">Research and Projects</Link>
-          <Link href="/coursework/">Coursework and Activities</Link>
+          {activityProjects.length ? <Link href="/activities/">Coursework and Activities</Link> : null}
         </div>
       </nav>
 
